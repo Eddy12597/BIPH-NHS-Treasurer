@@ -83,7 +83,6 @@ const verifyChain = (): void => {
 
 onMounted(async () => {
   const res = await fetch('https://eddy12598.pythonanywhere.com/get-logs');
-//   const res = await fetch('http://localhos')
   transactions.value = await res.json();
   verifyChain();
 });
