@@ -4,10 +4,32 @@ import SubSection from "../components/SubSection.vue";
 import RollingStats from "../components/RollingStats.vue"
 
 import { onMounted, onUnmounted, ref } from "vue";
-import { getUpcomingEvents, getStats } from "../components/main.ts"
+import { UpcomingEvent, getStatsAndUpcomingEvents } from "../components/main.ts"
+import type { Stats } from "../components/main.ts"
 
-let upcomingEvents = ref(getUpcomingEvents());
-let stats = ref(getStats());
+let loadingPlaceholder = ref(" [loading...]")
+
+let stats = ref<{stats: Stats, upcoming_events: Array<UpcomingEvent>}>({
+	"stats": {
+		"balance": 0,
+		"pending_proposals": 0,
+		"pending_reimbursements": 0,
+		"approved_proposals": 0,
+		"approved_reimbursements": 0,
+	},
+	"upcoming_events": [
+		{
+			"event_name": "Loading ...",
+			"event_chair": "Loading ...",
+		}
+	]
+}); // default value
+
+onMounted(async () => {
+  stats.value = await getStatsAndUpcomingEvents();
+//   console.log(stats.value);
+  loadingPlaceholder.value = ""
+})
 
 const section2Ref = ref<HTMLElement | null>(null);
 const isSection2Visible = ref(false);let observer: IntersectionObserver | null = null;
@@ -28,8 +50,8 @@ onMounted(() => {
       });
     },
     { 
-      threshold: 0.1, // Trigger when 10% of the element is visible
-      rootMargin: "0px 0px -50px 0px" // Adjust this if needed
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px"
     }
   );
   
@@ -41,7 +63,6 @@ onUnmounted(() => {
     observer.disconnect();
   }
 });
-
 </script>
 
 <template>
@@ -67,18 +88,18 @@ onUnmounted(() => {
   </div>
 
   <div ref="section2Ref" id="section-2" :class="{ 'fade-in-visible': isSection2Visible}">
-		<h2>Upcoming Events | Stats</h2>
+		<h2>Upcoming Events | Stats{{ loadingPlaceholder }}</h2>
 		<div id="events-and-stats">
 			<div id="events">
 				<SubSection 
-					v-for="event in upcomingEvents" 
-					:key="event.eventName"
-					:title="event.eventName"
+					v-for="event in stats.upcoming_events" 
+					:key="event.event_name"
+					:title="event.event_name"
 					color="white"
 				>
-					<p><strong>Chair:</strong> {{ event.eventChair }}</p>
-					<p v-if="event.approxTotalBudget">
-						<strong>Budget:</strong> ￥{{ event.approxTotalBudget.toLocaleString() }}
+					<p><strong>Chair:</strong> {{ event.event_chair }}</p>
+					<p v-if="event.approx_total_budget">
+						<strong>Budget:</strong> ￥{{ event.approx_total_budget.toLocaleString() }}
 					</p>
 					<p v-else>
 						<strong>Budget:</strong> TBD
@@ -89,11 +110,11 @@ onUnmounted(() => {
 			<div id="events-stats-sep-line"></div>
 
 			<div id="stats">
-				<RollingStats title="Balance" :target="stats.balance"></RollingStats>
-				<RollingStats title="Pending Proposals" :target="stats.pending_proposals"></RollingStats>
-				<RollingStats title="Pending Reimbursements" :target="stats.pending_reimbursements"></RollingStats>
-				<RollingStats title="Approved Proposals" :target="stats.approved_proposals"></RollingStats>
-				<RollingStats title="Approved Reimbursements" :target="stats.approved_reimbursements"></RollingStats>
+				<RollingStats title="Balance" :target="stats.stats.balance"></RollingStats>
+				<RollingStats title="Pending Proposals" :target="stats.stats.pending_proposals"></RollingStats>
+				<RollingStats title="Pending Reimbursements" :target="stats.stats.pending_reimbursements"></RollingStats>
+				<RollingStats title="Approved Proposals" :target="stats.stats.approved_proposals"></RollingStats>
+				<RollingStats title="Approved Reimbursements" :target="stats.stats.approved_reimbursements"></RollingStats>
 			</div>
 		</div>
   </div>

@@ -1,32 +1,36 @@
-class UpcomingEvent {
+export class UpcomingEvent {
 	
-	public eventName: string;
-	public eventChair: string;
-	public approxTotalBudget?: number;
+	public event_name: string;
+	public event_chair: string;
+	public approx_total_budget?: number;
 
 
 	constructor(eventName: string, eventChair: string, approxTotalBudget?: number) {
-		this.eventName = eventName;
-		this.eventChair = eventChair;
-		this.approxTotalBudget = approxTotalBudget;
+		this.event_name = eventName;
+		this.event_chair = eventChair;
+		this.approx_total_budget = approxTotalBudget;
 	}
 }
 
-export function getUpcomingEvents(): Array<UpcomingEvent> {
-	// Test
 
-	let eventA = new UpcomingEvent("Test 1", "Test Chair 1", 1234);
-	let eventB = new UpcomingEvent("Test 2", "Test Chair 2");
-
-	return [eventA, eventB];
+export interface Stats {
+    balance: number;
+    pending_proposals: number;
+    pending_reimbursements: number;
+    approved_proposals: number;
+    approved_reimbursements: number;
 }
 
-export function getStats() {
-	return {
-		"balance": 6767,
-		"pending_proposals": 1,
-		"pending_reimbursements": 5,
-		"approved_proposals": 4,
-		"approved_reimbursements": 3,
-	}
+export async function getStatsAndUpcomingEvents(): Promise<{stats: Stats, upcoming_events: Array<UpcomingEvent>}> {
+    // const res = await fetch('https://eddy12598.pythonanywhere.com/get-stats-and-upcoming-events');
+    const res = await fetch('http://localhost:5000/get-stats-and-upcoming-events')
+    let js = await res.json();
+    console.log({
+        stats: js.stats,
+        upcoming_events: js.upcoming_events
+    })
+    return {
+        stats: js.stats,
+        upcoming_events: js.upcoming_events
+    }
 }
