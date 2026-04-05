@@ -6,6 +6,10 @@
 				<source srcset="../assets/nhs-logo.png">
 				<img src="../assets/nhs-logo.png" alt="NHS-LOGO">
 			</picture>
+			<picture>
+				<source srcset="../assets/biph-logo.png">
+				<img src="../assets/biph-logo.png" alt="BIPH-LOGO">
+			</picture>
 		</router-link>
 	</div>
 	<div id="header-menubar" v-if="isLargeScreen">
@@ -28,7 +32,7 @@ header {
 	height: 7.5vh;
 	display: flex;
 	align-items: center;
-	border-bottom: 1px solid var(--blue-1-);
+	border-bottom: 1px solid var(--blue-1);
 }  
 
 #header-left {
@@ -52,12 +56,14 @@ header {
 }
 
 #logo-pic {
-	height: 105%;
-	display: block;
+	height: 100%;
+	display: flex;
+	margin-top: 1.3vh;
+	gap: 1.5vw;
 }
 
 #logo-pic img {
-	height: 100%;
+	height: 80%;
 	width: auto;
 	display: block;
 	object-fit: contain;

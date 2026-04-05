@@ -35,13 +35,13 @@ withDefaults(defineProps<Props>(), {
 }
 
 .menubar-item a:hover {
-  color: var(--blue-1);
+  color: var(--blue1);
   background-color: #f0f0f0;
 }
 
 .menubar-item a.active {
-  color: var(--blue-1);
+  color: var(--blue1);
   font-weight: bold;
-  border-bottom: 2px solid var(--blue-1);;
+  border-bottom: 2px solid var(--blue1);;
 }
 </style>

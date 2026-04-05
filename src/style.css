@@ -12,5 +12,9 @@ body {
 }
 
 :root {
-    --blue-1: #02437A;
+    --blue1: #02437A;
+}
+
+a {
+	color: var(--blue1);
 }
