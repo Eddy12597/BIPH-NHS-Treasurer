@@ -1,5 +1,3 @@
-<script lang="ts">
-
 class UpcomingEvent {
 	
 	public eventName: string;
@@ -32,5 +30,3 @@ export function getStats() {
 		"approved_reimbursements": 3,
 	}
 }
-
-</script>

@@ -3,7 +3,7 @@ import Header from "../components/Header.vue";
 import SubSection from "../components/SubSection.vue";
 
 import { ref } from "vue";
-import { getUpcomingEvents, getStats } from "../components/main.vue"
+import { getUpcomingEvents, getStats } from "../components/main.ts"
 
 let upcomingEvents = ref(getUpcomingEvents());
 let stats = ref(getStats());
