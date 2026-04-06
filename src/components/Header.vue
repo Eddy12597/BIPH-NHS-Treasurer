@@ -17,6 +17,7 @@
 		<MenubarItem text="Home" to="/"></MenubarItem>
 		<MenubarItem text="About" to="/about"></MenubarItem>
 		<MenubarItem text="Submit Proposal" to="/submit-proposal"></MenubarItem>
+		<MenubarItem text="Request Reimbursement" to="/request-reimbursement"></MenubarItem>
 		<MenubarItem text="Logs" to="/logs"></MenubarItem>
 	</div>
 	<div id="header-menubar-small" v-else>

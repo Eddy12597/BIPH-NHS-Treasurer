@@ -4,6 +4,7 @@ import About from '../pages/About.vue'
 import NotFound from '../pages/NotFound.vue'
 import SubmitProposal from '../pages/SubmitProposal.vue'
 import Log from '../pages/Log.vue'
+import RequestReimbursement from '../pages/RequestReimbursement.vue'
 
 const routes = [ 
   {
@@ -25,6 +26,11 @@ const routes = [
     path: '/logs',
     name: 'TransactionLog',
     component: Log
+  },
+  {
+    path: '/request-reimbursement',
+    name: 'RequestReimbursement',
+    component: RequestReimbursement
   },
   {
     path: '/:pathMatch(.*)*',

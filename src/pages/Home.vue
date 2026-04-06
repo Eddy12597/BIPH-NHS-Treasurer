@@ -7,7 +7,7 @@ import { onMounted, onUnmounted, ref } from "vue";
 import { UpcomingEvent, getStatsAndUpcomingEvents } from "../components/main.ts"
 import type { Stats } from "../components/main.ts"
 
-let loadingPlaceholder = ref(" [loading...]")
+let loadingPlaceholder = ref(" [ loading... ]")
 
 let stats = ref<{stats: Stats, upcoming_events: Array<UpcomingEvent>}>({
 	"stats": {
@@ -79,10 +79,10 @@ onUnmounted(() => {
 		<h2>Actions</h2>
 		<div id="section-1-subsections">
 			<SubSection title="Submit Budget Proposal">
-				<a href="https://youtube.com/">Fill out form</a>
+				<router-link to="/submit-proposal">Fill out form</router-link>
 			</SubSection>
 			<SubSection title="Request Reimbursement">
-				<a href="https://youtube.com/">Fill out form</a>
+				<router-link to="/request-reimbursement">Fill out form</router-link>
 			</SubSection>
 		</div>
   </div>
