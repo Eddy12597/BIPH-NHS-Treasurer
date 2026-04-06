@@ -1,15 +1,15 @@
 export class UpcomingEvent {
-	
-	public event_name: string;
-	public event_chair: string;
-	public approx_total_budget?: number;
+    public event_name: string;
+    public event_chair: string;
+    public event_start_date: string; // YYYY-MM-DD
+    public approx_total_budget?: number;
 
-
-	constructor(eventName: string, eventChair: string, approxTotalBudget?: number) {
-		this.event_name = eventName;
-		this.event_chair = eventChair;
-		this.approx_total_budget = approxTotalBudget;
-	}
+    constructor(eventName: string, eventChair: string, eventDate: string, approxTotalBudget?: number) {
+        this.event_name = eventName;
+        this.event_chair = eventChair;
+        this.event_start_date = eventDate;
+        this.approx_total_budget = approxTotalBudget;
+    }
 }
 
 

@@ -11,6 +11,8 @@
 	</LogItem>
 </div>
 
+<Footer></Footer>
+
 </template>
 
 <style scoped>
@@ -47,6 +49,7 @@
 import { ref, onMounted } from 'vue';
 import CryptoJS from 'crypto-js';
 import Header from '../components/Header.vue';
+import Footer from '../components/Footer.vue';
 
 interface Transaction {
   Timestamp: string,

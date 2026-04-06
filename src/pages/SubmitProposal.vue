@@ -15,6 +15,8 @@
 			<BudgetProposal></BudgetProposal>	
 		</div>
   </div>
+
+  <Footer></Footer>
 </template>
 
 <style scoped>
@@ -61,6 +63,7 @@ import Header from '../components/Header.vue';
 import VueTurnstile from 'vue-turnstile';
 
 import BudgetProposal from '../components/BudgetProposal.vue';
+import Footer from '../components/Footer.vue';
 
 const isVerified = ref(false);
 const token = ref("");

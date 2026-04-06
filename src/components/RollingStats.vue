@@ -69,7 +69,7 @@ const animateNumber = () => {
 
 // Watch for target changes
 watch(() => props.target, (newVal, oldVal) => {
-  console.log(`RollingStats "${props.title}" - Target changed:`, oldVal, '->', newVal);
+//   console.log(`RollingStats "${props.title}" - Target changed:`, oldVal, '->', newVal);
   
   if (newVal !== oldVal) {
     // Reset animation flag for this component instance
@@ -94,7 +94,7 @@ watch(() => props.target, (newVal, oldVal) => {
 const handleIntersection = (entries: IntersectionObserverEntry[]) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting && !hasAnimated && props.target !== currentValue.value) {
-      console.log(`RollingStats "${props.title}" - Starting animation for:`, props.target);
+    //   console.log(`RollingStats "${props.title}" - Starting animation for:`, props.target);
       animateNumber();
       hasAnimated = true;
       
