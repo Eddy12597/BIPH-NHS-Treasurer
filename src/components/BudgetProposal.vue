@@ -97,6 +97,7 @@
 
 <script setup lang="ts">
 import { reactive, ref, computed } from 'vue';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const isSubmitting = ref(false);
 const hasError = ref(false);
@@ -191,7 +192,7 @@ const submitProposal = () => {
   let payload = JSON.stringify(form, null, 2);
   let xhr = new XMLHttpRequest();
   
-  xhr.open("POST", "https://eddy12598.pythonanywhere.com/submit-budget-proposal");
+  xhr.open("POST", `${BACKEND_URL}/submit-budget-proposal`);
 //   xhr.open("POST", "http://localhost:5000/submit-budget-proposal");
   xhr.setRequestHeader("Content-Type", "application/json");
 

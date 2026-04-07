@@ -4,6 +4,7 @@
 <div id="log-hero">
 	<h1>Logs | "Blockchain"</h1>
 	<p>Transparency and verifiability using blockchain-like structures</p>
+	<p>Current Balance: {{ balance }}</p>
 </div>
 
 <div id="log-section">
@@ -30,7 +31,7 @@
 	background-position: center;
 	background-size: contain;
 	background-repeat: no-repeat;
-	background-color: #A0A0A0;
+	background-color: #7B7B7B;
 
 	gap: 10vh;
 	color: white;
@@ -48,13 +49,16 @@
 
 </style>
 
-<script setup lang="ts">
+<script setup lang="ts">;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 import { ref, onMounted } from 'vue';
 import LogItem from '../components/LogItem.vue';
 import CryptoJS from 'crypto-js';
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
 import DataPlaceholder from '../components/DataPlaceholder.vue';
+
+let balance = ref("Loading ...");
 
 interface Transaction {
   Timestamp: string,
@@ -90,10 +94,11 @@ const verifyChain = (): void => {
 };
 
 onMounted(async () => {
-  const res = await fetch('https://eddy12598.pythonanywhere.com/get-logs');
+  const res = await fetch(`${BACKEND_URL}/get-logs`);
 //   const res = await fetch('http://localhost:5000/get-logs');
   transactions.value = (await res.json()).data;
   console.log(JSON.stringify(transactions.value, null, 2));
   verifyChain();
+  balance.value = String(transactions.value[transactions.value.length-1].Balance)
 });
 </script>

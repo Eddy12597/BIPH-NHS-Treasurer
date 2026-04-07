@@ -30,7 +30,7 @@
 
 	padding: 5px 30px 5px 30px;
 
-	height: 10vh;
+	height: 6vh;
 	background-color: #333435;
 }    
 

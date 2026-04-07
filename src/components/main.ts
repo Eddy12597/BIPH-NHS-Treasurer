@@ -1,4 +1,5 @@
 
+const BACKEND_URL = import.meta.env.BACKEND_URL;
 
 export class UpcomingEvent {
     public event_name: string;
@@ -24,7 +25,7 @@ export interface Stats {
 }
 
 export async function getStatsAndUpcomingEvents(): Promise<{stats: Stats, upcoming_events: Array<UpcomingEvent>}> {
-    const res = await fetch('https://eddy12598.pythonanywhere.com/get-stats-and-upcoming-events');
+    const res = await fetch(`${BACKEND_URL}/get-stats-and-upcoming-events`);
     // const res = await fetch('http://localhost:5000/get-stats-and-upcoming-events')
     let js = await res.json();
     console.log({
