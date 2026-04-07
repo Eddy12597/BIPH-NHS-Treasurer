@@ -1,3 +1,5 @@
+
+
 export class UpcomingEvent {
     public event_name: string;
     public event_chair: string;
@@ -33,4 +35,16 @@ export async function getStatsAndUpcomingEvents(): Promise<{stats: Stats, upcomi
         stats: js.stats,
         upcoming_events: js.upcoming_events
     }
+}
+
+
+export interface Transaction {
+    Timestamp: string;
+    From: string;
+    To: string;
+    Amount: number;
+    PropID: string;
+    Notes: string;
+    Balance: number;
+    PrevHash: string;
 }

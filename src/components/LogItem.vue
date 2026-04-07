@@ -41,15 +41,18 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
+import type { PropType } from 'vue'
+import type { Transaction } from './main.ts'
 
 const props = defineProps({
   transaction: {
-    type: Object,
+    type: Object as PropType<Transaction>,
     required: true,
-    validator: (value) => {
-      return value.Timestamp && value.From && value.To && typeof value.Amount === 'number'
+    validator: (value: Transaction): boolean => {
+      // Use !! to ensure a strict boolean return type
+      return !!(value.Timestamp && value.From && value.To && typeof value.Amount === 'number')
     }
   }
 })
@@ -58,7 +61,7 @@ const props = defineProps({
 const isIncoming = computed(() => {
   // You might want to compare with current user's address
   // For now, let's assume 'System' or empty From means incoming
-  return props.transaction.From === 'System' || props.transaction.From === ''
+  return props.transaction.From === 'System' || props.transaction.From === 'Treasurer' || props.transaction.From === '';
 })
 
 const isOutgoing = computed(() => {
@@ -92,7 +95,7 @@ const truncatedHash = computed(() => {
 })
 
 // Helper function to format numbers
-const formatNumber = (value) => {
+const formatNumber = (value: any) => {
   if (typeof value !== 'number') return value
   return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,

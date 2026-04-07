@@ -26,7 +26,7 @@
             <option value="FUNDRAISER_CHARITY">Fundraiser / Charity</option>
             <option value="SPORTS">Sports Activities</option>
             <option value="THEME_BASED">Theme-based (e.g. Teacher's Day)</option>
-						<option value="OTHER">Other</option>
+            <option value="OTHER">Other</option>
           </select>
         </div>
       </fieldset>
@@ -83,13 +83,23 @@
         </div>
       </fieldset>
 
-      <button type="submit" class="submit-btn">Submit Budget Proposal</button>
+      <button 
+        type="submit" 
+        class="submit-btn" 
+        :class="{ 'btn-submitting': isSubmitting, 'btn-error': hasError }"
+        :disabled="isSubmitting"
+      >
+        {{ isSubmitting ? 'Submitting...' : 'Submit Budget Proposal' }}
+      </button>
     </form>
   </div>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref, computed } from 'vue';
+
+const isSubmitting = ref(false);
+const hasError = ref(false);
 
 // Sectioned form data
 const form = reactive({
@@ -105,10 +115,9 @@ const form = reactive({
   estimated_attendance: 0,
   vendors_suppliers: '',
   reimbursement_contact: '',
-  itemized_budget: {} // This will be formatted on submit
+  itemized_budget: {} 
 });
 
-// Helper for the dynamic key-value pairs in the interface
 const itemizedRows = ref([
   { name: '', cost: 0 }
 ]);
@@ -116,24 +125,15 @@ const itemizedRows = ref([
 const addItem = () => itemizedRows.value.push({ name: '', cost: 0 });
 const removeItem = (index: any) => itemizedRows.value.splice(index, 1);
 
-// Logic to calculate total for the UI
 const totalExpenses = computed(() => {
   return itemizedRows.value.reduce((sum, item) => sum + (item.cost || 0), 0);
 });
 
 const validateFormData = (data: any): string | null => {
-  // Patterns to check for invalid strings
   const invalidPatterns = [
-    /__/,           // Double underscore
-    /<script/i,     // Script tags
-    /javascript:/i, // JavaScript protocol
-    /onload=/i,     // Event handlers
-    /--/,           // Double dash (SQL injection)
-    /\\/,           // Backslash
-    /[\x00-\x1f]/,  // Control characters
+    /__/, /<script/i, /javascript:/i, /onload=/i, /--/, /\\/, /[\x00-\x1f]/,
   ];
 
-  // Function to check a single value
   const checkValue = (value: any, fieldName: string): string | null => {
     if (typeof value === 'string') {
       for (const pattern of invalidPatterns) {
@@ -145,13 +145,11 @@ const validateFormData = (data: any): string | null => {
     return null;
   };
 
-  // Check all fields in form
   for (const [key, value] of Object.entries(data)) {
     if (typeof value === 'string') {
       const error = checkValue(value, key);
       if (error) return error;
     } else if (typeof value === 'object' && value !== null) {
-      // Check itemized_budget object
       for (const [itemKey, itemValue] of Object.entries(value)) {
         const error = checkValue(itemKey, `${key}.${itemKey}`);
         if (error) return error;
@@ -163,7 +161,6 @@ const validateFormData = (data: any): string | null => {
     }
   }
 
-  // Check itemized rows specifically
   for (let i = 0; i < itemizedRows.value.length; i++) {
     const row = itemizedRows.value[i];
     if (row.name) {
@@ -171,12 +168,10 @@ const validateFormData = (data: any): string | null => {
       if (error) return error;
     }
   }
-
-  return null; // No validation errors
+  return null;
 };
 
 const submitProposal = () => {
-  // 1. Transform the dynamic rows back into the JSON object required by the backend
   const budgetJson: any = {};
   itemizedRows.value.forEach(row => {
     if (row.name) budgetJson[row.name] = row.cost;
@@ -184,43 +179,54 @@ const submitProposal = () => {
   
   form.itemized_budget = budgetJson;
 
- // validate data
   const validationError = validateFormData(form);
-
   if (validationError) {
-  	alert(validationError);
-  	return; // Stop submission if validation fails
+    alert(validationError);
+    return;
   }
 
-  let payload = JSON.stringify(form, null, 2)
-  // 2. Ready for API call
-  console.log('Payload for Backend:', payload);
-  alert('Proposal submitted successfully!');
+  isSubmitting.value = true;
+  hasError.value = false;
 
+  let payload = JSON.stringify(form, null, 2);
   let xhr = new XMLHttpRequest();
-  xhr.open("POST", "https://eddy12598.pythonanywhere.com/submit-budget-proposal")
-//   xhr.open("POST", "http://localhost:5000/submit-budget-proposal")
-  xhr.setRequestHeader("Content-Type", "application/json")
+  
+  // xhr.open("POST", "https://eddy12598.pythonanywhere.com/submit-budget-proposal");
+  xhr.open("POST", "http://localhost:5000/submit-budget-proposal");
+  xhr.setRequestHeader("Content-Type", "application/json");
+
   xhr.onload = function() {
+    isSubmitting.value = false;
     if (xhr.status === 200) {
       alert('Proposal submitted successfully!');
     } else {
+      triggerErrorState();
       alert('Submission failed: ' + xhr.statusText);
     }
   };
   
   xhr.onerror = function() {
+    isSubmitting.value = false;
+    triggerErrorState();
     alert('Network error occurred');
   };
   
   xhr.send(payload);
 };
+
+const triggerErrorState = () => {
+  hasError.value = true;
+  // Briefly show red, then transition back
+  setTimeout(() => {
+    hasError.value = false;
+  }, 2000);
+};
 </script>
 
 <style scoped>
 .budget-form-container {
-  max-width: 50%; /* Adjusts to half the screen width */
-  min-width: 600px; /* Ensures it doesn't get too thin on mobile */
+  max-width: 50%;
+  min-width: 600px;
   margin: 20px auto;
   font-family: sans-serif;
 }
@@ -262,16 +268,29 @@ input, select, textarea {
   cursor: pointer;
   border-radius: 4px;
 }
+
+/* Updated Button Styles */
 .submit-btn {
   width: 100%;
   padding: 12px;
-  background-color: var(--blue1);
+  background-color: var(--blue1, #3498db); /* Fallback to a standard blue if variable missing */
   color: white;
   border: none;
   border-radius: 6px;
   font-size: 1rem;
   cursor: pointer;
+  transition: background-color 0.4s ease, cursor 0.2s ease;
 }
+
+.btn-submitting {
+  background-color: #95a5a6 !important; /* Grey */
+  cursor: not-allowed !important;
+}
+
+.btn-error {
+  background-color: #e74c3c !important; /* Red */
+}
+
 .total-calc {
   margin-top: 15px;
   text-align: right;
