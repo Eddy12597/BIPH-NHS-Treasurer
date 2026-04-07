@@ -129,7 +129,7 @@ const verified = ref<boolean | null>(null);
 
 const verifyChain = (): void => {
   // Use '0' if that was your initial genesis input in Python
-  let expectedPrevHash = '0'; 
+  let expectedPrevHash = '0000000000000000000000000000000000000000000000000000000000000000'; 
   
   for (let i = 0; i < transactions.value.length; i++) {
     const tx = transactions.value[i];
