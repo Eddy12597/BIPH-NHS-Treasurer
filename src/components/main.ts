@@ -1,5 +1,6 @@
 
-const BACKEND_URL = import.meta.env.BACKEND_URL;
+// @ts-ignore
+const BACKEND_URL = window.__APP_CONFIG__?.API_URL || 'http://localhost:3000';
 
 export class UpcomingEvent {
     public event_name: string;

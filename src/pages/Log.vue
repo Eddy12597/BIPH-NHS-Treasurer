@@ -50,7 +50,9 @@
 </style>
 
 <script setup lang="ts">;
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+// @ts-ignore
+const BACKEND_URL = window.__APP_CONFIG__?.API_URL || 'http://localhost:5000'; 
+
 import { ref, onMounted } from 'vue';
 import LogItem from '../components/LogItem.vue';
 import CryptoJS from 'crypto-js';

@@ -58,7 +58,8 @@
 </style>
 
 <script setup lang="ts">
-const SITEKEY = import.meta.env.VITE_TURNSTILE_SITEKEY;
+// @ts-ignore
+const SITEKEY = window.__APP_CONFIG__?.TURNSTILE_SITEKEY || '0x4AAAAAAC1OOWY-M8dbMzWN';
 import { ref, watch } from 'vue';
 import Header from '../components/Header.vue';
 import VueTurnstile from 'vue-turnstile';
