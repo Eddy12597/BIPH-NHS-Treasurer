@@ -116,7 +116,8 @@ interface Transaction {
   Balance: number,
   Notes: string,
   PrevHash: string,
-  Nonce: string
+  Nonce: string,
+  ComputedHash: string
 }
 
 const transactions = ref<Transaction[]>([]);
@@ -128,33 +129,29 @@ const displayTransactions = computed(() => {
 const verified = ref<boolean | null>(null);
 
 const verifyChain = (): void => {
-  // Use '0' if that was your initial genesis input in Python
   let expectedPrevHash = '0000000000000000000000000000000000000000000000000000000000000000'; 
   
   for (let i = 0; i < transactions.value.length; i++) {
-    const tx = transactions.value[i];
+    const tx = transactions.value[i]; 
     
-    // Exact match of your Python base_data order
     const baseData = tx.Timestamp + tx.From + tx.To + tx.Amount + tx.Notes + expectedPrevHash;
-    const computedHash = CryptoJS.SHA256(baseData + tx.Nonce).toString();
+    const resultHash = CryptoJS.SHA256(baseData + tx.Nonce).toString();
     
-    // Check Proof of Work (6 zeros)
-    if (!computedHash.startsWith("000000")) {
+    // Attach the result so the LogItem can see it
+    tx.ComputedHash = resultHash;
+
+    if (!resultHash.startsWith("000000")) {
         verified.value = false;
-        console.error(`PoW failed at index ${i}. Hash: ${computedHash}`);
         return;
     }
 
-    // Check Linkage
-    if (computedHash !== tx.PrevHash) {
+    if (resultHash !== tx.PrevHash) {
       verified.value = false;
-      console.error(`Integrity failed at index ${i}. Got ${computedHash} but expected ${tx.PrevHash}`);
       return;
     }
     
     expectedPrevHash = tx.PrevHash;
   }
-  
   verified.value = true;
 };
 
