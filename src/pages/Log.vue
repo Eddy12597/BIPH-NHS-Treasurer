@@ -3,7 +3,8 @@
 
 <div id="log-hero">
     <h1>Logs | "Blockchain"</h1>
-    <p>Transparency and verifiability using blockchain-like structures</p>
+    <p>Transparency and verifiability using blockchain-like structures. </p>
+		<p>Transaction data (before appending nonce) is the augmentation of Timestamp, From, To, Amount, Notes, and Previous Hash. Adding Nonce to Transaction data makes a hash starting with 6 leading 0s.</p>
     
     <div :class="['status-badge', verified === true ? 'valid' : verified === false ? 'invalid' : 'checking']">
         <span v-if="verified === true">✓ Chain Verified</span>
@@ -16,7 +17,7 @@
 
 <div id="log-section">
     <DataPlaceholder :target="transactions">
-        <LogItem v-for="log in transactions" :key="log.PrevHash" :transaction="log">
+        <LogItem v-for="log in displayTransactions" :key="log.PrevHash" :transaction="log">
         </LogItem>
     </DataPlaceholder>
 </div>
@@ -84,6 +85,12 @@
 #log-hero p {
     font-size: 1.5em;
     font-family: Roboto;
+		margin-left: 15vw;
+		margin-right: 15vw;
+}
+
+#log-section {
+	margin-top: 3vh;
 }
 </style>
 
@@ -91,7 +98,7 @@
 // @ts-ignore
 const BACKEND_URL = window.__APP_CONFIG__?.API_URL || import.meta.env.BACKEND_URL; 
 
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import LogItem from '../components/LogItem.vue';
 import CryptoJS from 'crypto-js';
 import Header from '../components/Header.vue';
@@ -113,6 +120,11 @@ interface Transaction {
 }
 
 const transactions = ref<Transaction[]>([]);
+
+const displayTransactions = computed(() => {
+  return [...transactions.value].reverse();
+});
+
 const verified = ref<boolean | null>(null);
 
 const verifyChain = (): void => {
