@@ -191,8 +191,8 @@ const submitProposal = () => {
   let payload = JSON.stringify(form, null, 2);
   let xhr = new XMLHttpRequest();
   
-  // xhr.open("POST", "https://eddy12598.pythonanywhere.com/submit-budget-proposal");
-  xhr.open("POST", "http://localhost:5000/submit-budget-proposal");
+  xhr.open("POST", "https://eddy12598.pythonanywhere.com/submit-budget-proposal");
+//   xhr.open("POST", "http://localhost:5000/submit-budget-proposal");
   xhr.setRequestHeader("Content-Type", "application/json");
 
   xhr.onload = function() {

@@ -90,8 +90,8 @@ const verifyChain = (): void => {
 };
 
 onMounted(async () => {
-//   const res = await fetch('https://eddy12598.pythonanywhere.com/get-logs');
-  const res = await fetch('http://localhost:5000/get-logs');
+  const res = await fetch('https://eddy12598.pythonanywhere.com/get-logs');
+//   const res = await fetch('http://localhost:5000/get-logs');
   transactions.value = (await res.json()).data;
   console.log(JSON.stringify(transactions.value, null, 2));
   verifyChain();
