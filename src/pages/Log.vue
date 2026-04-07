@@ -2,56 +2,94 @@
 <Header></Header>
 
 <div id="log-hero">
-	<h1>Logs | "Blockchain"</h1>
-	<p>Transparency and verifiability using blockchain-like structures</p>
-	<p>Current Balance: {{ balance }}</p>
+    <h1>Logs | "Blockchain"</h1>
+    <p>Transparency and verifiability using blockchain-like structures</p>
+    
+    <div :class="['status-badge', verified === true ? 'valid' : verified === false ? 'invalid' : 'checking']">
+        <span v-if="verified === true">✓ Chain Verified</span>
+        <span v-else-if="verified === false">⚠ Chain Compromised</span>
+        <span v-else>Searching for Genesis...</span>
+    </div>
+
+    <p>Current Balance: {{ balance }}</p>
 </div>
 
 <div id="log-section">
-	
-	<DataPlaceholder :target="transactions">
-		<LogItem v-for="log in transactions" :key="log.PrevHash" :transaction="log">
-		</LogItem>
-	</DataPlaceholder>
+    <DataPlaceholder :target="transactions">
+        <LogItem v-for="log in transactions" :key="log.PrevHash" :transaction="log">
+        </LogItem>
+    </DataPlaceholder>
 </div>
 
 <Footer></Footer>
-
 </template>
 
 <style scoped>
 #log-hero {
-	height: 45vh;
-	display: flex;
-	align-items: center;
-	flex-direction: column;
+    height: 50vh; /* Increased slightly for the badge */
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 15vh;
+    background-image: url("../assets/blockchain-diagram.png");
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: #7B7B7B;
+    gap: 5vh;
+    color: white;
+    font-family: Roboto;
+}
 
-	padding-top: 20vh;
-	background-image: url("../assets/blockchain-diagram.png");
-	background-position: center;
-	background-size: contain;
-	background-repeat: no-repeat;
-	background-color: #7B7B7B;
+/* Badge Styles */
+.status-badge {
+    padding: 10px 25px;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 1.1em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
 
-	gap: 10vh;
-	color: white;
-	font-family: Roboto;
+.valid {
+    background-color: #2ecc71;
+    color: white;
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+}
+
+.invalid {
+    background-color: #e74c3c;
+    color: white;
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+    animation: shake 0.5s;
+}
+
+.checking {
+    background-color: #f1c40f;
+    color: #2c3e50;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
 }
 
 #log-hero h1 {
-	font-size: 2.5em;
+    font-size: 2.5em;
 }
 
-#log-hero p{
-	font-size: 1.5em;
-	font-family: Roboto;
+#log-hero p {
+    font-size: 1.5em;
+    font-family: Roboto;
 }
-
 </style>
 
-<script setup lang="ts">;
+<script setup lang="ts">
 // @ts-ignore
-const BACKEND_URL = window.__APP_CONFIG__?.API_URL || 'http://localhost:5000'; 
+const BACKEND_URL = window.__APP_CONFIG__?.API_URL || import.meta.env.BACKEND_URL; 
 
 import { ref, onMounted } from 'vue';
 import LogItem from '../components/LogItem.vue';
@@ -70,37 +108,58 @@ interface Transaction {
   PropID: string,
   Balance: number,
   Notes: string,
-  PrevHash: string
+  PrevHash: string,
+  Nonce: string
 }
 
 const transactions = ref<Transaction[]>([]);
 const verified = ref<boolean | null>(null);
 
 const verifyChain = (): void => {
-  let prevHash = '0'; // Genesis
+  // Use '0' if that was your initial genesis input in Python
+  let expectedPrevHash = '0'; 
   
   for (let i = 0; i < transactions.value.length; i++) {
     const tx = transactions.value[i];
-    const data = tx.Amount + tx.Notes + tx.Timestamp + prevHash;
-    const computedHash = CryptoJS.SHA256(data).toString();
     
+    // Exact match of your Python base_data order
+    const baseData = tx.Timestamp + tx.From + tx.To + tx.Amount + tx.Notes + expectedPrevHash;
+    const computedHash = CryptoJS.SHA256(baseData + tx.Nonce).toString();
+    
+    // Check Proof of Work (6 zeros)
+    if (!computedHash.startsWith("000000")) {
+        verified.value = false;
+        console.error(`PoW failed at index ${i}. Hash: ${computedHash}`);
+        return;
+    }
+
+    // Check Linkage
     if (computedHash !== tx.PrevHash) {
       verified.value = false;
+      console.error(`Integrity failed at index ${i}. Got ${computedHash} but expected ${tx.PrevHash}`);
       return;
     }
     
-    prevHash = tx.PrevHash;
+    expectedPrevHash = tx.PrevHash;
   }
   
   verified.value = true;
 };
 
 onMounted(async () => {
-  const res = await fetch(`${BACKEND_URL}/get-logs`);
-//   const res = await fetch('http://localhost:5000/get-logs');
-  transactions.value = (await res.json()).data;
-  console.log(JSON.stringify(transactions.value, null, 2));
-  verifyChain();
-  balance.value = String(transactions.value[transactions.value.length-1].Balance)
+  try {
+    const res = await fetch(`${BACKEND_URL}/get-logs`);
+    const result = await res.json();
+    transactions.value = result.data;
+    
+    verifyChain();
+    
+    if (transactions.value.length > 0) {
+      balance.value = String(transactions.value[transactions.value.length - 1].Balance);
+    }
+  } catch (err) {
+    console.error("Fetch error:", err);
+    balance.value = "Error";
+  }
 });
 </script>

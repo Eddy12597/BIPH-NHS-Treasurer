@@ -1,6 +1,6 @@
 
 // @ts-ignore
-const BACKEND_URL = window.__APP_CONFIG__?.API_URL || 'http://localhost:3000';
+const BACKEND_URL = window.__APP_CONFIG__?.API_URL || import.meta.env.BACKEND_URL;
 
 export class UpcomingEvent {
     public event_name: string;
@@ -46,7 +46,8 @@ export interface Transaction {
     To: string;
     Amount: number;
     PropID: string;
-    Notes: string;
     Balance: number;
+    Notes: string;
     PrevHash: string;
+    Nonce: string;
 }
