@@ -17,7 +17,7 @@
 
 <div id="log-section">
     <DataPlaceholder :target="transactions">
-        <LogItem v-for="log in displayTransactions" :key="log.PrevHash" :transaction="log">
+        <LogItem v-for="tx in displayTransactions" :key="tx.PrevHash" :transaction="tx">
         </LogItem>
     </DataPlaceholder>
 </div>
@@ -96,7 +96,8 @@
 
 <script setup lang="ts">
 // @ts-ignore
-const BACKEND_URL = window.__APP_CONFIG__?.API_URL || import.meta.env.BACKEND_URL; 
+// const BACKEND_URL = window.__APP_CONFIG__?.API_URL || import.meta.env.BACKEND_URL; 
+const BACKEND_URL = "http://localhost:5000"
 
 import { ref, onMounted, computed } from 'vue';
 import LogItem from '../components/LogItem.vue';
@@ -104,21 +105,9 @@ import CryptoJS from 'crypto-js';
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
 import DataPlaceholder from '../components/DataPlaceholder.vue';
+import type { Transaction } from '../components/main';
 
 let balance = ref("Loading ...");
-
-interface Transaction {
-  Timestamp: string,
-  From: string,
-  To: string,
-  Amount: number,
-  PropID: string,
-  Balance: number,
-  Notes: string,
-  PrevHash: string,
-  Nonce: string,
-  ComputedHash: string
-}
 
 const transactions = ref<Transaction[]>([]);
 
@@ -129,29 +118,36 @@ const displayTransactions = computed(() => {
 const verified = ref<boolean | null>(null);
 
 const verifyChain = (): void => {
-  let expectedPrevHash = '0000000000000000000000000000000000000000000000000000000000000000'; 
+  // This is the "Previous Hash" for the first-ever block
+  let rollingLink = '0000000000000000000000000000000000000000000000000000000000000000'; 
   
   for (let i = 0; i < transactions.value.length; i++) {
-    const tx = transactions.value[i]; 
+    const tx = transactions.value[i] as any; 
     
-    const baseData = tx.Timestamp + tx.From + tx.To + tx.Amount + tx.Notes + expectedPrevHash;
-    const resultHash = CryptoJS.SHA256(baseData + tx.Nonce).toString();
+    // 1. Reconstruct the base string using the link from the block BEFORE it
+    const baseData = tx.Timestamp + tx.From + tx.To + tx.Amount + tx.Notes + rollingLink;
+    const computed = CryptoJS.SHA256(baseData + tx.Nonce).toString();
     
-    // Attach the result so the LogItem can see it
-    tx.ComputedHash = resultHash;
+    tx.ComputedHash = computed;
 
-    if (!resultHash.startsWith("000000")) {
+    // 2. Check: Does it have 6 zeros?
+    if (!computed.startsWith("000000")) {
         verified.value = false;
+        console.error(`PoW Failure at Index ${i}`);
         return;
     }
 
-    if (resultHash !== tx.PrevHash) {
+    // 3. Check: Does it match the 'Hash' column in your Sheet?
+    if (computed !== tx.Hash) { 
       verified.value = false;
+      console.error(`Integrity Failure at Index ${i}. \nSheet has: ${tx.Hash}\nVue computed: ${computed}`);
       return;
     }
     
-    expectedPrevHash = tx.PrevHash;
+    // 4. ROLL FORWARD: The current verified hash becomes the link for the NEXT block
+    rollingLink = tx.Hash; 
   }
+  
   verified.value = true;
 };
 

@@ -51,4 +51,5 @@ export interface Transaction {
     PrevHash: string;
     Nonce: string;
     ComputedHash: string;
+    Hash: string;
 }

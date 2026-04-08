@@ -33,16 +33,16 @@
         <span class="detail-label">Notes:</span>
         <span class="detail-value notes">{{ transaction.Notes }}</span>
       </div>
+			<div class="detail-row hash-row">
+					<span class="detail-label">Computed Block Hash:</span>
+					<span class="detail-value hash" :class="{ 'text-error': transaction.ComputedHash !== transaction.Hash }">
+						{{ truncateString(transaction.ComputedHash) }}
+					</span>
+			</div>
       <div class="detail-row hash-row">
-        <span class="detail-label">Expected Hash:</span>
+        <span class="detail-label">Previous Hash:</span>
         <span class="detail-value hash">{{ truncatedHash }}</span>
       </div>
-			<div class="detail-row hash-row">
-				<span class="detail-label">Computed Block Hash:</span>
-				<span class="detail-value hash" :class="{ 'text-error': transaction.ComputedHash !== transaction.PrevHash }">
-					{{ truncateString(transaction.ComputedHash) }}
-				</span>
-			</div>
     </div>
   </div>
 </template>
@@ -109,8 +109,8 @@ const formatNumber = (value: any) => {
   }).format(value)
 }
 
-const truncateString = (value: string, length = 12) => {
-	return !value ? '' : (value.length > length ? value.slice(0, length) + '...' : value);
+const truncateString = (value: string, length = 12, endlength = 8) => {
+	return !value ? '' : (value.length > length ? value.slice(0, length) + '...' + value.slice(-endlength) : value);
 }
 </script>
 
