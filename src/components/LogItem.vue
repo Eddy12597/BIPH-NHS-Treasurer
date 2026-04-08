@@ -34,10 +34,16 @@
         <span class="detail-value notes">{{ transaction.Notes }}</span>
       </div>
 			<div class="detail-row hash-row">
-					<span class="detail-label">Computed Block Hash:</span>
-					<span class="detail-value hash" :class="{ 'text-error': transaction.ComputedHash !== transaction.Hash }">
-						{{ truncateString(transaction.ComputedHash) }}
-					</span>
+				<div>
+						<span class="detail-label">Computed Block Hash:</span>
+						<span class="detail-value hash" :class="{ 'text-error': transaction.ComputedHash !== transaction.Hash }">
+							{{ truncateString(transaction.ComputedHash) }}
+						</span>
+				</div>
+				<div>
+					<span class="detail-label" style="margin-right: 2px;">Nonce:</span>
+					<span class="hash detail-value">{{ transaction.Nonce }}</span>
+				</div>
 			</div>
       <div class="detail-row hash-row">
         <span class="detail-label">Previous Hash:</span>

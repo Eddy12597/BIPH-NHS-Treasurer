@@ -96,8 +96,8 @@
 
 <script setup lang="ts">
 // @ts-ignore
-const BACKEND_URL = window.__APP_CONFIG__?.API_URL || import.meta.env.BACKEND_URL; 
-// const BACKEND_URL = "http://localhost:5000"
+// const BACKEND_URL = window.__APP_CONFIG__?.API_URL || import.meta.env.BACKEND_URL; 
+const BACKEND_URL = "http://localhost:5000"
 
 import { ref, onMounted, computed } from 'vue';
 import LogItem from '../components/LogItem.vue';
