@@ -31,7 +31,7 @@
 	padding: 5px 30px 5px 30px;
 
 	height: 6vh;
-	background-color: #333435;
+	background-color: var(--black1)
 }    
 
 .footer-copyright {

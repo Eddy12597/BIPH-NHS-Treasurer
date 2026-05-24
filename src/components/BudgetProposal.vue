@@ -98,7 +98,8 @@
 <script setup lang="ts">
 import { reactive, ref, computed } from 'vue';
 // @ts-ignore
-const BACKEND_URL = window.__APP_CONFIG__?.API_URL || import.meta.dev.BACKEND_URL;
+// const BACKEND_URL = window.__APP_CONFIG__?.API_URL || import.meta.dev.BACKEND_URL;
+const BACKEND_URL = "http://127.0.0.1:5000"
 
 const isSubmitting = ref(false);
 const hasError = ref(false);

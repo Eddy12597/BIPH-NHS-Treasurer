@@ -19,6 +19,7 @@
 		<MenubarItem text="Submit Proposal" to="/submit-proposal"></MenubarItem>
 		<MenubarItem text="Request Reimbursement" to="/request-reimbursement"></MenubarItem>
 		<MenubarItem text="Logs" to="/logs"></MenubarItem>
+		<MenubarItem text="Transaction" to="/add-transaction"></MenubarItem>
 	</div>
 	<div id="header-menubar-small" v-else>
 		<!--Small-->

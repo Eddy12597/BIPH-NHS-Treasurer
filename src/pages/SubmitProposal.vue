@@ -6,8 +6,8 @@
   </div>
 
   <div id="verification" v-if="!isVerified">
-    <!-- <vue-turnstile site-key="1x00000000000000000000AA" v-model="token"></vue-turnstile> -->
-	 <vue-turnstile :site-key="SITEKEY" v-model="token"></vue-turnstile>
+    <vue-turnstile site-key="1x00000000000000000000AA" v-model="token"></vue-turnstile>
+	 <!-- <vue-turnstile :site-key="SITEKEY" v-model="token"></vue-turnstile> -->
   </div>
 
   <div v-else class="success-container">

@@ -10,7 +10,7 @@
       <div class="amount" :class="{ 'amount-in': isIncoming, 'amount-out': isOutgoing }">
         {{ formattedAmount }}
       </div>
-    </div>
+    </div>	
 
     <div class="log-details">
       <div class="detail-row">
@@ -40,10 +40,10 @@
 							{{ truncateString(transaction.ComputedHash) }}
 						</span>
 				</div>
-				<div>
+				<!-- <div>
 					<span class="detail-label" style="margin-right: 2px;">Nonce:</span>
 					<span class="hash detail-value">{{ transaction.Nonce }}</span>
-				</div>
+				</div> -->
 			</div>
       <div class="detail-row hash-row">
         <span class="detail-label">Previous Hash:</span>
@@ -266,6 +266,14 @@ const truncateString = (value: string, length = 12, endlength = 8) => {
 
 .text-error {
   color: #dc2626 !important;
+  font-weight: bold;
+}
+
+.hash-error {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  padding: 2px 6px;
+  border-radius: 4px;
   font-weight: bold;
 }
 </style>

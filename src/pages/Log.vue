@@ -4,13 +4,13 @@
 <div id="log-hero">
     <h1>Logs | "Blockchain"</h1>
     <p>Transparency and verifiability using blockchain-like structures. </p>
-		<p>Transaction data (before appending nonce) is the augmentation of Timestamp, From, To, Amount, Notes, and Previous Hash. Adding Nonce to Transaction data makes a hash starting with 6 leading 0s.</p>
+		<p>This ledger uses a Cryptographic Linked List. Each entry contains a digital signature of the previous record, ensuring that any unauthorized change to past data will immediately break the chain's integrity.</p>
     
     <div :class="['status-badge', verified === true ? 'valid' : verified === false ? 'invalid' : 'checking']">
-        <span v-if="verified === true">✓ Chain Verified</span>
-        <span v-else-if="verified === false">⚠ Chain Compromised</span>
-        <span v-else>Searching for Genesis...</span>
-    </div>
+			<span v-if="verified === true">🔒 Integrity Verified</span>
+			<span v-else-if="verified === false">🔓 Ledger Tampered</span>
+			<span v-else>Verifying Records...</span>
+		</div>
 
     <p>Current Balance: {{ balance }}</p>
 </div>
@@ -83,7 +83,7 @@
 }
 
 #log-hero p {
-    font-size: 1.5em;
+    font-size: 1.25em;
     font-family: Roboto;
 		margin-left: 15vw;
 		margin-right: 15vw;
@@ -117,34 +117,60 @@ const displayTransactions = computed(() => {
 
 const verified = ref<boolean | null>(null);
 
+// const verifyChain = (): void => {
+//   // This is the "Previous Hash" for the first-ever block
+//   let rollingLink = '0000000000000000000000000000000000000000000000000000000000000000'; 
+  
+//   for (let i = 0; i < transactions.value.length; i++) {
+//     const tx = transactions.value[i] as any; 
+    
+//     // 1. Reconstruct the base string using the link from the block BEFORE it
+//     const baseData = tx.Timestamp + tx.From + tx.To + tx.Amount + tx.Notes + rollingLink;
+//     const computed = CryptoJS.SHA256(baseData + tx.Nonce).toString();
+    
+//     tx.ComputedHash = computed;
+
+//     // 2. Check: Does it have 6 zeros?
+//     if (!computed.startsWith("000000")) {
+//         verified.value = false;
+//         console.error(`PoW Failure at Index ${i}`);
+//         return;
+//     }
+
+//     // 3. Check: Does it match the 'Hash' column in your Sheet?
+//     if (computed !== tx.Hash) { 
+//       verified.value = false;
+//       console.error(`Integrity Failure at Index ${i}. \nSheet has: ${tx.Hash}\nVue computed: ${computed}`);
+//       return;
+//     }
+    
+//     // 4. ROLL FORWARD: The current verified hash becomes the link for the NEXT block
+//     rollingLink = tx.Hash; 
+//   }
+  
+//   verified.value = true;
+// };
+
 const verifyChain = (): void => {
-  // This is the "Previous Hash" for the first-ever block
+  // Same starting salt
   let rollingLink = '0000000000000000000000000000000000000000000000000000000000000000'; 
   
   for (let i = 0; i < transactions.value.length; i++) {
     const tx = transactions.value[i] as any; 
     
-    // 1. Reconstruct the base string using the link from the block BEFORE it
+    // The baseData no longer needs a Nonce
     const baseData = tx.Timestamp + tx.From + tx.To + tx.Amount + tx.Notes + rollingLink;
-    const computed = CryptoJS.SHA256(baseData + tx.Nonce).toString();
+    const computed = CryptoJS.SHA256(baseData).toString();
     
     tx.ComputedHash = computed;
 
-    // 2. Check: Does it have 6 zeros?
-    if (!computed.startsWith("000000")) {
-        verified.value = false;
-        console.error(`PoW Failure at Index ${i}`);
-        return;
-    }
-
-    // 3. Check: Does it match the 'Hash' column in your Sheet?
+    // We ONLY check if the computed hash matches what's in your sheet
     if (computed !== tx.Hash) { 
       verified.value = false;
-      console.error(`Integrity Failure at Index ${i}. \nSheet has: ${tx.Hash}\nVue computed: ${computed}`);
+      console.error(`Chain broken at index ${i}! Data has been modified.`);
       return;
     }
     
-    // 4. ROLL FORWARD: The current verified hash becomes the link for the NEXT block
     rollingLink = tx.Hash; 
   }
   
