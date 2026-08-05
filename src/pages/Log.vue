@@ -2,22 +2,22 @@
 <Header></Header>
 
 <div id="log-hero">
-    <h1>Logs | "Blockchain"</h1>
-    <p>Transparency and verifiability using blockchain-like structures. </p>
-		<p>This ledger uses a Cryptographic Linked List. Each entry contains a digital signature of the previous record, ensuring that any unauthorized change to past data will immediately break the chain's integrity.</p>
-    
+    <h1>Logs</h1>
+    <!-- <p>Transparency and verifiability using blockchain-like structures. </p> -->
+		<!-- <p>This ledger uses a Cryptographic Linked List. Each entry contains a digital signature of the previous record, ensuring that any unauthorized change to past data will immediately break the chain's integrity.</p> -->
+<!--     
     <div :class="['status-badge', verified === true ? 'valid' : verified === false ? 'invalid' : 'checking']">
 			<span v-if="verified === true">🔒 Integrity Verified</span>
 			<span v-else-if="verified === false">🔓 Ledger Tampered</span>
 			<span v-else>Verifying Records...</span>
-		</div>
+		</div> -->
 
-    <p>Current Balance: {{ balance }}</p>
+    <p id="bal-text">Current Balance: {{ balance }}</p>
 </div>
 
 <div id="log-section">
     <DataPlaceholder :target="transactions">
-        <LogItem v-for="tx in displayTransactions" :key="tx.PrevHash" :transaction="tx">
+        <LogItem v-for="tx in displayTransactions" :transaction="tx">
         </LogItem>
     </DataPlaceholder>
 </div>
@@ -27,20 +27,22 @@
 
 <style scoped>
 #log-hero {
-    height: 50vh; /* Increased slightly for the badge */
+    height: 15vh;
     display: flex;
     align-items: center;
     flex-direction: column;
-    padding-top: 15vh;
-    background-image: url("../assets/blockchain-diagram.png");
+    padding-top: 3vh;
+    /* background-image: url("../assets/blockchain-diagram.png"); */
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
-    background-color: #7B7B7B;
-    gap: 5vh;
+    /* background-color: #7B7B7B; */
+	background-color: var(--blue1);
+    gap: 2vh;
     color: white;
     font-family: Roboto;
 }
+
 
 /* Badge Styles */
 .status-badge {
@@ -111,8 +113,11 @@ let balance = ref("Loading ...");
 
 const transactions = ref<Transaction[]>([]);
 
+
 const displayTransactions = computed(() => {
-  return [...transactions.value].reverse();
+	if (!transactions.value) return [];
+	console.table(transactions.value)
+  	return [...transactions.value.filter(tx => tx.From !== null && tx.From !== '' && tx.From !== undefined)].reverse();
 });
 
 const verified = ref<boolean | null>(null);
@@ -183,7 +188,7 @@ onMounted(async () => {
     const result = await res.json();
     transactions.value = result.data;
     
-    verifyChain();
+    // verifyChain();
     
     if (transactions.value.length > 0) {
       balance.value = String(transactions.value[transactions.value.length - 1].Balance);
