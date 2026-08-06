@@ -147,7 +147,7 @@ const truncateString = (value: string, length = 12, endlength = 8) => {
 }
 
 .type-badge {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   padding: 4px 8px;
   border-radius: 4px;
@@ -175,7 +175,7 @@ const truncateString = (value: string, length = 12, endlength = 8) => {
 }
 
 .amount {
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 600;
 }
 
@@ -201,7 +201,7 @@ const truncateString = (value: string, length = 12, endlength = 8) => {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .detail-label {
@@ -218,7 +218,7 @@ const truncateString = (value: string, length = 12, endlength = 8) => {
 
 .from-address, .to-address {
   font-family: 'Courier New', monospace;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .hash {

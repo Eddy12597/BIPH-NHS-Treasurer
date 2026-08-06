@@ -86,7 +86,7 @@
     padding: 10px 25px;
     border-radius: 50px;
     font-weight: bold;
-    font-size: 1.1em;
+    font-size: 1.2em;
     text-transform: uppercase;
     letter-spacing: 1px;
     transition: all 0.3s ease;
@@ -130,6 +130,8 @@
 
 #log-section {
 	margin-top: 3vh;
+	margin-left: 12vw;
+	margin-right: 12vw;
 }
 </style>
 
