@@ -12,7 +12,14 @@
 			<span v-else>Verifying Records...</span>
 		</div> -->
 
-    <p id="bal-text">Current Balance: {{ balance }}</p>
+    <div id="bal-and-refresh">
+			<p id="bal-text">Current Balance: {{ balance }}</p>
+			<div id="refresh-btn-div">
+				<button @click="fetchData" id="refresh-btn">
+					Refresh
+				</button>
+			</div>
+		</div>
 </div>
 
 <div id="log-section">
@@ -26,8 +33,38 @@
 </template>
 
 <style scoped>
+
+#bal-and-refresh {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	gap: 1.75vh;
+}
+
+#refresh-btn {
+	cursor: pointer;
+	padding: 1.1vh 2.15vh 1.1vh 2.15vh;
+	border-radius: 5px;
+	outline: black solid 1px;
+	border: none;
+	background-color: white;
+	outline-offset: -3px;
+	font-size: 1em;
+}
+
+#refresh-btn:hover {
+	background-color: var(--blue1);
+	color: white;
+	outline-color: white;
+	outline-offset: -3px;
+}
+
+#refresh-btn:active {
+	background-color: var(--blue2);
+}
+
 #log-hero {
-    height: 15vh;
+    height: 20vh;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -182,20 +219,27 @@ const verifyChain = (): void => {
   verified.value = true;
 };
 
+
+const fetchData = async (event=null, url: string = `${BACKEND_URL}/get-logs`) => {
+	balance.value = "Loading...";
+	transactions.value = null;
+	try {
+		console.log(`fetching from: ${url}`);
+		let res = await fetch(url);
+		let result = await res.json();
+		transactions.value = result.data;
+		console.table(transactions.value);
+
+		if (transactions.value.length > 0) {
+			balance.value = String(transactions.value[transactions.value.length - 1].Balance);
+		}
+	} catch (err) {
+		console.error("Fetch error:", err);
+		balance.value = "Error";
+	}
+}
+
 onMounted(async () => {
-  try {
-    const res = await fetch(`${BACKEND_URL}/get-logs`);
-    const result = await res.json();
-    transactions.value = result.data;
-    
-    // verifyChain();
-    
-    if (transactions.value.length > 0) {
-      balance.value = String(transactions.value[transactions.value.length - 1].Balance);
-    }
-  } catch (err) {
-    console.error("Fetch error:", err);
-    balance.value = "Error";
-  }
+  	await fetchData();
 });
 </script>
