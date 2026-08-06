@@ -23,16 +23,57 @@
 </div>
 
 <div id="log-section">
-    <DataPlaceholder :target="transactions">
-        <LogItem v-for="tx in displayTransactions" :transaction="tx">
-        </LogItem>
-    </DataPlaceholder>
+	<div id="tools-log">
+		<div id="log-switch-format">
+
+		</div>
+		<div id="log-searchbar-div">
+
+		</div>
+		<div id="log-export-btn-div">
+			<button @click="() => downloadCSV()" id="export-btn">
+				Export as .csv
+			</button>
+		</div>
+	</div>
+	<DataPlaceholder :target="transactions">
+			<LogItem v-for="tx in displayTransactions" :transaction="tx">
+			</LogItem>
+	</DataPlaceholder>
 </div>
 
 <Footer></Footer>
 </template>
 
 <style scoped>
+
+#export-btn {
+	cursor: pointer;
+	padding: 1.1vh 2.15vh 1.1vh 2.15vh;
+	border-radius: 5px;
+	outline: black solid 1px;
+	border: none;
+	background-color: white;
+	outline-offset: -3px;
+	font-size: 1em;
+}
+
+#export-btn:hover {
+	background-color: var(--blue1);
+	color: white;
+	outline-color: white;
+	outline-offset: -3px;
+}
+
+#export-btn:active {
+	background-color: var(--blue2);
+}
+
+#tools-log {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
 
 #bal-and-refresh {
 	display: flex;
@@ -132,10 +173,51 @@
 	margin-top: 3vh;
 	margin-left: 12vw;
 	margin-right: 12vw;
+	display: flex;
+	flex-direction: column;
+	/* align-items: center; */
+	gap: 3vh;
 }
 </style>
 
 <script setup lang="ts">
+function exportToCSV(data, filename = 'export.csv') {
+  if (!data || !data.length) return;
+  
+  const headers = Object.keys(data[0]);
+  const csvRows = [];
+  csvRows.push(headers.join(','));
+  
+  for (const row of data) {
+    const values = headers.map(header => {
+      const val = row[header] || '';
+      if (typeof val === 'string' && (val.includes(',') || val.includes('"'))) {
+        return `"${val.replace(/"/g, '""')}"`;
+      }
+      return val;
+    });
+    csvRows.push(values.join(','));
+  }
+  
+  return csvRows.join('\n');
+}
+
+function downloadCSV(data=transactions.value, filename = 'export.csv') {
+	console.log(`data to be downloaded: ${data}`)
+	const csvContent = exportToCSV(data);
+	
+	const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+	const link = document.createElement('a');
+	const url = URL.createObjectURL(blob);
+	
+	link.href = url;
+	link.download = filename;
+	document.body.appendChild(link);
+	link.click();
+	document.body.removeChild(link);
+	URL.revokeObjectURL(url);
+}
+
 // @ts-ignore
 const BACKEND_URL = window.__APP_CONFIG__?.API_URL || import.meta.env.BACKEND_URL; 
 // const BACKEND_URL = "http://localhost:5000"
@@ -230,6 +312,7 @@ const fetchData = async (url: string = `${BACKEND_URL}/get-logs`) => {
 		let res = await fetch(url);
 		let result = await res.json();
 		transactions.value = result.data;
+		transactions.value = transactions.value.filter(tx => tx.From !== null && tx.From !== '' && tx.From !== undefined)
 		console.table(transactions.value);
 
 		if (transactions.value.length > 0) {
