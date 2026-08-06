@@ -15,7 +15,7 @@
     <div id="bal-and-refresh">
 			<p id="bal-text">Current Balance: {{ balance }}</p>
 			<div id="refresh-btn-div">
-				<button @click="fetchData" id="refresh-btn">
+				<button @click="() => fetchData()" id="refresh-btn">
 					Refresh
 				</button>
 			</div>
@@ -220,9 +220,9 @@ const verifyChain = (): void => {
 };
 
 
-const fetchData = async (event=null, url: string = `${BACKEND_URL}/get-logs`) => {
+const fetchData = async (url: string = `${BACKEND_URL}/get-logs`) => {
 	balance.value = "Loading...";
-	transactions.value = null;
+	transactions.value = [];
 	try {
 		console.log(`fetching from: ${url}`);
 		let res = await fetch(url);
