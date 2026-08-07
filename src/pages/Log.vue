@@ -41,11 +41,26 @@
 			</LogItem>
 	</DataPlaceholder>
 </div>
-
+<!-- <div id=gs-log-iframe-div>
+	<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vS-gfTYwixpbqnhDOpZPVQruQvwD-dEygWhxnCFntwKAFdiV3BjitAmOa27j6Awg5mvTGGFdgqatvCZ/pubhtml?gid=164586908&amp;single=true&amp;widget=true&amp;headers=false" id="gs-log-iframe"></iframe>
+</div> -->
 <Footer></Footer>
 </template>
 
 <style scoped>
+
+#gs-log-iframe-div {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	margin: 20px;
+	height: 50vh;
+}
+
+#gs-log-iframe {
+	width: 100%;
+	height: 100%;
+}
 
 #export-btn {
 	cursor: pointer;
@@ -181,7 +196,7 @@
 </style>
 
 <script setup lang="ts">
-function exportToCSV(data, filename = 'export.csv') {
+function exportToCSV(data: Array) {
   if (!data || !data.length) return;
   
   const headers = Object.keys(data[0]);
@@ -206,7 +221,7 @@ function downloadCSV(data=transactions.value, filename = 'export.csv') {
 	console.log(`data to be downloaded: ${data}`)
 	const csvContent = exportToCSV(data);
 	
-	const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+	const blob = new Blob([csvContent ?? []], { type: 'text/csv;charset=utf-8;' });
 	const link = document.createElement('a');
 	const url = URL.createObjectURL(blob);
 	
