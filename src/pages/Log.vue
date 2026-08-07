@@ -196,7 +196,7 @@
 </style>
 
 <script setup lang="ts">
-function exportToCSV(data: Array) {
+function exportToCSV(data: Array<any>) {
   if (!data || !data.length) return;
   
   const headers = Object.keys(data[0]);
