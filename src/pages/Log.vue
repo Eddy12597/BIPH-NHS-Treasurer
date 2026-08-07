@@ -221,7 +221,7 @@ function downloadCSV(data=transactions.value, filename = 'export.csv') {
 	console.log(`data to be downloaded: ${data}`)
 	const csvContent = exportToCSV(data);
 	
-	const blob = new Blob([csvContent ?? []], { type: 'text/csv;charset=utf-8;' });
+	const blob = new Blob([csvContent ?? ''], { type: 'text/csv;charset=utf-8;' });
 	const link = document.createElement('a');
 	const url = URL.createObjectURL(blob);
 	
