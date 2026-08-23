@@ -25,10 +25,18 @@
 <div id="log-section">
 	<div id="tools-log">
 		<div id="log-switch-format">
-
+			<!--This might be for polished UI vs plain text/raw style-->
 		</div>
 		<div id="log-searchbar-div">
-
+			<!--Concatenate each row/entry as a search target string-->
+			<div id="log-searchbar-div">
+				<input
+					v-model="searchTerm"
+					type="text"
+					placeholder="Search transactions..."
+					id="search-input"
+				/>
+			</div>
 		</div>
 		<div id="log-export-btn-div">
 			<button @click="() => downloadCSV()" id="export-btn">
@@ -48,6 +56,33 @@
 </template>
 
 <style scoped>
+#search-input {
+  padding: 1.1vh 2.15vh;
+  border-radius: 5px;
+  outline: black solid 1px;
+  border: none;
+  background-color: white;
+  outline-offset: -3px;
+  font-size: 1em;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#search-input:focus {
+  background-color: var(--blue1);
+  color: white;
+  outline-color: white;
+  outline-offset: -3px;
+}
+
+#search-input:focus::placeholder {
+	color: white;
+}
+
+#log-searchbar-div {
+  flex: 1;
+  min-width: 150px;
+}
 
 #gs-log-iframe-div {
 	display: flex;
@@ -250,11 +285,11 @@ let balance = ref("Loading ...");
 const transactions = ref<Transaction[]>([]);
 
 
-const displayTransactions = computed(() => {
-	if (!transactions.value) return [];
-	console.table(transactions.value)
-  	return [...transactions.value.filter(tx => tx.From !== null && tx.From !== '' && tx.From !== undefined)].reverse();
-});
+// const displayTransactions = computed(() => {
+// 	if (!transactions.value) return [];
+// 	console.table(transactions.value)
+//   	return [...transactions.value.filter(tx => tx.From !== null && tx.From !== '' && tx.From !== undefined)].reverse();
+// });
 
 const verified = ref<boolean | null>(null);
 
@@ -341,5 +376,29 @@ const fetchData = async (url: string = `${BACKEND_URL}/get-logs`) => {
 
 onMounted(async () => {
   	await fetchData();
+});
+
+
+const searchTerm = ref('');
+
+// Modified displayTransactions
+const displayTransactions = computed(() => {
+  if (!transactions.value) return [];
+  let filtered = transactions.value.filter(tx => tx.From !== null && tx.From !== '' && tx.From !== undefined);
+  
+  if (searchTerm.value.trim()) {
+    const term = searchTerm.value.toLowerCase().trim();
+    filtered = filtered.filter(tx => {
+      // Concatenate all relevant fields into one searchable string
+      const searchable = Object.values(tx)
+        .filter(val => val !== null && val !== undefined)
+        .map(String)
+        .join(' ')
+        .toLowerCase();
+      return searchable.includes(term);
+    });
+  }
+  
+  return [...filtered].reverse();
 });
 </script>
