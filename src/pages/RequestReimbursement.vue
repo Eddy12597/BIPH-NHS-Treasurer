@@ -1,14 +1,84 @@
 <template>
 <Header></Header>
 
+<div id="hero-submit-re">
+    Request Reimbursement
+  </div>
+
+  <div id="verification-re" v-if="!isVerified">
+    <vue-turnstile site-key="1x00000000000000000000AA" v-model="token"></vue-turnstile>
+	 <!-- <vue-turnstile :site-key="SITEKEY" v-model="token"></vue-turnstile> -->
+  </div>
+
+  <div v-else class="success-container-re">
+    <div class="reim-section" id="section-1-info-re">
+			<ReimbursementRequest></ReimbursementRequest>
+		</div>
+  </div>
+
 <Footer></Footer>
 </template>
 
 <style scoped>
-    
+#hero-submit-re {
+  height: 20vh;
+  background-color: var(--blue1);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 2em;
+  color: white;
+}
+
+#verification-re {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+}
+
+.success-container-re {
+  text-align: center;
+  padding: 50px;
+
+  padding-left: 10vw;
+	padding-right: 10vw;
+	
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	padding-top: 10vh;
+}
+
+.success-container-re h2 {
+	color: var(--blue1);
+}
 </style>
 
 <script setup lang="ts">
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
+import VueTurnstile from 'vue-turnstile';
+import ReimbursementRequest from '../components/ReimbursementRequest.vue';
+const isVerified = ref(false);
+const token = ref("");
+import { ref, watch } from 'vue';
+
+// Watch the token. When Turnstile finishes, it updates 'token'.
+watch(token, async (newToken) => {
+  if (newToken) {
+    const isValid = await verifyWithBackend(newToken);
+    if (isValid) {
+      isVerified.value = true;
+    }
+  }
+});
+
+// Mock backend verification logic
+const verifyWithBackend = async (token: string) => {
+  console.log("Verifying token:", token);
+  // In production, send 'token' to your Node/Python/Go server via fetch/axios
+  return true; 
+};
 </script>
