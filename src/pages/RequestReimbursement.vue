@@ -6,8 +6,8 @@
   </div>
 
   <div id="verification-re" v-if="!isVerified">
-    <vue-turnstile site-key="1x00000000000000000000AA" v-model="token"></vue-turnstile>
-	 <!-- <vue-turnstile :site-key="SITEKEY" v-model="token"></vue-turnstile> -->
+    <!-- <vue-turnstile site-key="1x00000000000000000000AA" v-model="token"></vue-turnstile> -->
+	 <vue-turnstile :site-key="SITEKEY" v-model="token"></vue-turnstile>
   </div>
 
   <div v-else class="success-container-re">
@@ -57,6 +57,8 @@
 </style>
 
 <script setup lang="ts">
+// @ts-ignore
+const SITEKEY = window.__APP_CONFIG__?.TURNSTILE_SITEKEY || import.meta.env.TURNSTILE_SITEKEY;
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
 import VueTurnstile from 'vue-turnstile';

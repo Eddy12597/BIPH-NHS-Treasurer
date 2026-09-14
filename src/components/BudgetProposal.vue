@@ -54,12 +54,12 @@
       <fieldset>
         <legend>Section 3: Justification</legend>
         <div class="field">
-          <label>Purpose of Event</label>
-          <textarea v-model="form.purpose" rows="3"></textarea>
+          <label>Description of Event</label>
+          <textarea v-model="form.description" rows="3"></textarea>
         </div>
         <div class="field">
-          <label>Justification</label>
-          <textarea v-model="form.justification" rows="3"></textarea>
+          <label>Purpose and Justification</label>
+          <textarea v-model="form.purpose" rows="3"></textarea>
         </div>
         <div class="field">
           <label>Why should NHS fund this?</label>
@@ -112,7 +112,7 @@ const form = reactive({
   event_start_date: '',
   event_type: 'OTHER',
   expected_revenue: 0,
-  justification: '',
+  description: '',
   purpose: '',
   nhs_fund_reason: '',
   estimated_attendance: 0,
