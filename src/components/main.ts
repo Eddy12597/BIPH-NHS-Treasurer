@@ -52,4 +52,5 @@ export interface Transaction {
     Nonce: string;
     ComputedHash: string;
     Hash: string;
+    Verified?: boolean;
 }

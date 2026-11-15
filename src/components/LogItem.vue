@@ -6,6 +6,20 @@
           {{ transactionType }}
         </span>
         <span class="timestamp">{{ formattedTimestamp }}</span>
+
+				<div v-if='transaction.Verified ?? false'>
+					<div class="tooltip">
+						<a><FontAwesomeIcon :icon="faCheck" class="type-icon" /></a>
+						<span class="tooltiptext">Verified</span>
+					</div>
+				</div>
+				
+				<div v-else>
+					<div class="tooltip">
+						<a><FontAwesomeIcon :icon="faQuestion" class="type-icon" /></a>
+						<span class="tooltiptext">Not Yet Verified</span>
+					</div>
+				</div>
       </div>
       <div class="amount" :class="{ 'amount-in': isIncoming, 'amount-out': isOutgoing }">
         {{ formattedAmount }}
@@ -53,6 +67,8 @@
 import { computed } from 'vue'
 import type { PropType } from 'vue'
 import type { Transaction } from './main.ts'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faCheck, faQuestion } from '@fortawesome/free-solid-svg-icons'
 
 const props = defineProps({
   transaction: {
@@ -81,20 +97,17 @@ const transactionType = computed(() => {
   return 'TRANSFER'
 })
 
-// Format timestamp
 const formattedTimestamp = computed(() => {
   const date = new Date(props.transaction.Timestamp)
   return date.toLocaleString()
 })
 
-// Format amount
 const formattedAmount = computed(() => {
   const absAmount = Math.abs(props.transaction.Amount)
   const prefix = isIncoming.value ? '+' : (isOutgoing.value ? '-' : '')
   return `${prefix}${formatNumber(absAmount)}`
 })
 
-// Truncate hash for display
 const truncatedHash = computed(() => {
   const hash = props.transaction.PrevHash
   if (!hash || hash.length <= 16) return hash
@@ -116,6 +129,34 @@ const truncateString = (value: string, length = 12, endlength = 8) => {
 </script>
 
 <style scoped>
+
+.type-icon {
+	font-size: 10px;
+}
+
+.tooltip {
+	position: relative;
+	display: inline-block;
+	border-bottom: 1px solid black;
+	cursor: pointer;
+}
+
+.tooltiptext {
+	visibility: hidden;
+	width: 130px;
+	background-color: black;
+	color: #ffffff;
+	text-align: center;
+	padding: 5px 0;
+	border-radius: 6px;
+	position: absolute;
+	z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+	visibility: visible;
+}
+
 .log-container {
   background: white;
   color: black;
