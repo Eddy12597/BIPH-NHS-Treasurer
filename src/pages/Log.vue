@@ -280,7 +280,8 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faCopy } from '@fortawesome/free-solid-svg-icons' 
 // import { ref } from 'vue'
 
-const codeDisplay = ref(`curl -X GET ${window.location.href}/api/logs`)
+// const codeDisplay = ref(`curl -X GET ${window.location.href}/api/logs`)
+const codeDisplay = ref(`curl -X GET https://biph-nhs-treasury.netlify.app/api/logs`)
 
 async function copyCode() {
 	await navigator.clipboard.writeText(codeDisplay.value);
