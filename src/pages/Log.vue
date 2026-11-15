@@ -278,7 +278,7 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faCopy } from '@fortawesome/free-solid-svg-icons' 
-import { ref } from 'vue'
+// import { ref } from 'vue'
 
 const codeDisplay = ref(`curl -X GET ${window.location.href}/api/logs`)
 
