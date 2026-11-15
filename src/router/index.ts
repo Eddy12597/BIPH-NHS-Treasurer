@@ -5,7 +5,8 @@ import NotFound from '../pages/NotFound.vue'
 import SubmitProposal from '../pages/SubmitProposal.vue'
 import Log from '../pages/Log.vue'
 import RequestReimbursement from '../pages/RequestReimbursement.vue'
-import Transaction from '../pages/Transaction.vue'
+// import Transaction from '../pages/Transaction.vue'
+import Documentation from '../pages/Documentation.vue'
 
 const routes = [ 
   {
@@ -33,10 +34,15 @@ const routes = [
     name: 'RequestReimbursement',
     component: RequestReimbursement
   },
+//   {
+//     path: '/add-transaction',
+//     name: 'AddTransaction',
+//     component: Transaction
+//   },
   {
-    path: '/add-transaction',
-    name: 'AddTransaction',
-    component: Transaction
+    path: '/documentation',
+    name: 'Documentation',
+    component: Documentation
   },
   {
     path: '/:pathMatch(.*)*',
