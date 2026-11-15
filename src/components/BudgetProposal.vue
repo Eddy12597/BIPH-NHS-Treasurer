@@ -114,7 +114,6 @@
 /*
 TODO:
 - save automatically to browser storage
-- display proposal ID
 */
 
 

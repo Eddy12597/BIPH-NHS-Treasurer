@@ -7,19 +7,20 @@
         </span>
         <span class="timestamp">{{ formattedTimestamp }}</span>
 
-				<div v-if='transaction.Verified ?? false'>
+				<div v-if='transaction.Link ?? false'>
 					<div class="tooltip">
-						<a><FontAwesomeIcon :icon="faCheck" class="type-icon" /></a>
-						<span class="tooltiptext">Verified</span>
+						<a :href="transaction.Link"><FontAwesomeIcon :icon="faCheck" class="type-icon" /></a>
+						<span class="tooltiptext">Verified (Click to View Source)</span>
 					</div>
 				</div>
-				
+
 				<div v-else>
 					<div class="tooltip">
-						<a><FontAwesomeIcon :icon="faQuestion" class="type-icon" /></a>
+						<FontAwesomeIcon :icon="faQuestion" class="type-icon" />
 						<span class="tooltiptext">Not Yet Verified</span>
 					</div>
 				</div>
+
       </div>
       <div class="amount" :class="{ 'amount-in': isIncoming, 'amount-out': isOutgoing }">
         {{ formattedAmount }}
@@ -75,13 +76,11 @@ const props = defineProps({
     type: Object as PropType<Transaction>,
     required: true,
     validator: (value: Transaction): boolean => {
-      // Use !! to ensure a strict boolean return type
       return !!(value.Timestamp && value.From && value.To && typeof value.Amount === 'number')
     }
   }
 })
 
-// Determine if transaction is incoming or outgoing
 const isIncoming = computed(() => {
 //   return props.transaction.From === 'System' || props.transaction.From === 'Treasurer' || props.transaction.From === '';
 	return props.transaction.Amount >= 0;
@@ -108,13 +107,12 @@ const formattedAmount = computed(() => {
   return `${prefix}${formatNumber(absAmount)}`
 })
 
-const truncatedHash = computed(() => {
-  const hash = props.transaction.PrevHash
-  if (!hash || hash.length <= 16) return hash
-  return `${hash.slice(0, 12)}...${hash.slice(-8)}`
-})
+// const truncatedHash = computed(() => {
+//   const hash = props.transaction.PrevHash
+//   if (!hash || hash.length <= 16) return hash
+//   return `${hash.slice(0, 12)}...${hash.slice(-8)}`
+// })
 
-// Helper function to format numbers
 const formatNumber = (value: any) => {
   if (typeof value !== 'number') return value
   return new Intl.NumberFormat('en-US', {
