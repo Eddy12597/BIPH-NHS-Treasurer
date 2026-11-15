@@ -1,13 +1,18 @@
 <template>
 <Header></Header>
 
-Page not Found!
+<h1>Page not Found</h1>
 
 <Footer></Footer>
 </template>
 
 <style scoped>
-    
+h1 {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 4%;
+}
 </style>
 
 <script setup lang="ts">
