@@ -3,21 +3,32 @@
 
 <div id="log-hero">
     <h1>Logs</h1>
-    <!-- <p>Transparency and verifiability using blockchain-like structures. </p> -->
-		<!-- <p>This ledger uses a Cryptographic Linked List. Each entry contains a digital signature of the previous record, ensuring that any unauthorized change to past data will immediately break the chain's integrity.</p> -->
-<!--     
-    <div :class="['status-badge', verified === true ? 'valid' : verified === false ? 'invalid' : 'checking']">
-			<span v-if="verified === true">🔒 Integrity Verified</span>
-			<span v-else-if="verified === false">🔓 Ledger Tampered</span>
-			<span v-else>Verifying Records...</span>
-		</div> -->
+		<div id="bal-and-api">
+			<div id="bal-and-refresh">
+				<p id="bal-text">Current Balance: {{ balance }}</p>
+				<div id="refresh-btn-div">
+					<button @click="() => fetchData()" id="refresh-btn">
+						Refresh
+					</button>
+				</div>
+			</div>
 
-    <div id="bal-and-refresh">
-			<p id="bal-text">Current Balance: {{ balance }}</p>
-			<div id="refresh-btn-div">
-				<button @click="() => fetchData()" id="refresh-btn">
-					Refresh
-				</button>
+			<div id="bal-api-separator"></div>
+
+			<div id="log-api-div">
+				<div id="log-api-desc">
+					API Endpoint
+				</div>
+				<div id="log-api-code-section">
+					<div id="log-api-code-display">
+						{{ codeDisplay }}
+					</div>
+					<div id="log-api-code-copy-btn">
+						<button @click="async () => await copyCode()" id="copy-code-btn">
+							<FontAwesomeIcon :icon="faCopy"/>
+						</button>
+					</div>
+				</div>
 			</div>
 		</div>
 </div>
@@ -56,6 +67,38 @@
 </template>
 
 <style scoped>
+
+#bal-and-api {
+	display: flex;
+	margin: 0;
+	padding: 0;
+}
+
+#log-api-div {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+#log-api-desc {
+	font-weight: bold;
+}
+
+#log-api-code-section {
+	background-color: rgb(49, 51, 51);
+	width: auto;
+	min-width: 20vw;
+	padding: 2px 2px 2px 15px;
+	height: 3vh;
+	color: white;
+	display: flex;
+	gap: 10px;
+}
+
+#log-api-code-display {
+	text-wrap: nowrap;
+}
+
 #search-input {
   padding: 1.1vh 2.15vh;
   border-radius: 5px;
@@ -130,6 +173,8 @@
 	align-items: center;
 	flex-direction: column;
 	gap: 1.75vh;
+	text-wrap: nowrap;
+	width: 30vw;
 }
 
 #refresh-btn {
@@ -231,6 +276,18 @@
 </style>
 
 <script setup lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faCopy } from '@fortawesome/free-solid-svg-icons' 
+import { ref } from 'vue'
+
+const codeDisplay = ref(`curl -X GET ${window.location.href}/api/logs`)
+
+async function copyCode() {
+	await navigator.clipboard.writeText(codeDisplay.value);
+	alert('Copied!');
+	console.log(`copied ${codeDisplay.value}`);
+}
+
 function exportToCSV(data: Array<any>) {
   if (!data || !data.length) return;
   
