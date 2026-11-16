@@ -87,9 +87,10 @@
 #log-api-code-section {
 	background-color: rgb(49, 51, 51);
 	width: auto;
-	min-width: 20vw;
+	min-width: 15vw;
+	max-width: 24vw;
 	padding: 2px 2px 2px 15px;
-	height: 3vh;
+	height: auto;
 	color: white;
 	display: flex;
 	align-items: center;
@@ -97,7 +98,7 @@
 }
 
 #log-api-code-display {
-	text-wrap: nowrap;
+	font-family: consolas;
 }
 
 #search-input {
@@ -282,13 +283,39 @@ import { faCopy } from '@fortawesome/free-solid-svg-icons'
 // import { ref } from 'vue'
 
 // const codeDisplay = ref(`curl -X GET ${window.location.href}/api/logs`)
-const codeDisplay = ref(`curl -X GET https://eddy12598.pythonanywhere.com/api/logs`)
+
 
 async function copyCode() {
 	await navigator.clipboard.writeText(codeDisplay.value);
 	alert('Copied!');
 	console.log(`copied ${codeDisplay.value}`);
 }
+
+function getOS() {
+  const userAgent = window.navigator.userAgent,
+      platform = window.navigator?.userAgentData?.platform || window.navigator.platform,
+      macosPlatforms = ['macOS', 'Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+      windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+      iosPlatforms = ['iPhone', 'iPad', 'iPod'];
+  let os = null;
+
+  if (macosPlatforms.indexOf(platform) !== -1) {
+    os = 'Mac OS';
+  } else if (iosPlatforms.indexOf(platform) !== -1) {
+    os = 'iOS';
+  } else if (windowsPlatforms.indexOf(platform) !== -1) {
+    os = 'Windows';
+  } else if (/Android/.test(userAgent)) {
+    os = 'Android';
+  } else if (/Linux/.test(platform)) {
+    os = 'Linux';
+  }
+
+  return os;
+}
+
+const codeDisplay = ref(`curl${getOS() == 'Windows' ? '.exe' : ''} -X GET https://eddy12598.pythonanywhere.com/api/logs -H "Authorization: Bearer public-api-key-v1"`)
+
 
 function exportToCSV(data: Array<any>) {
   if (!data || !data.length) return;
