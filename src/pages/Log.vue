@@ -68,6 +68,10 @@
 
 <style scoped>
 
+#copy-code-btn {
+	cursor: pointer;
+}
+
 #bal-and-api {
 	display: flex;
 	margin: 0;
