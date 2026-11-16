@@ -68,12 +68,20 @@
 
 <style scoped>
 
+#bal-api-separator {
+	outline: white solid 1px;
+	margin-right: 5vw;
+	height: 80%;
+}
+
 #copy-code-btn {
 	cursor: pointer;
 }
 
 #bal-and-api {
 	display: flex;
+	justify-content: center;
+	align-items: center;
 	margin: 0;
 	padding: 0;
 }
