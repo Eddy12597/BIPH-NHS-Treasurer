@@ -1,0 +1,72 @@
+# schema:
+# Name-of-category:
+#   - name: Name-of-endpoint
+#     endpoint: /api/<endpoint> # no base included
+#     methods: <list of methods>
+#     parameters: <list of params>
+#     returntype: <return type>
+
+
+meta:
+  header: "Authorization: Bearer <your-api-key>"
+  base_url: "https://eddy12598.pythonanywhere.com"
+  categories:
+    - Data
+    - Procedural
+    - Misc
+  templates:
+    - cURL: curl {endpoint}{formatted_params} -X {method} -H {header}
+    - Python: |-
+        import requests
+        headers = "{header}"
+        params = {formatted_params}
+        response = requests.get("{endpoint}", params=params)
+    - NodeJS: |-
+        // fetch
+        const params = new URLSearchParams({formatted_params});
+        const response = await fetch("{endpoint}", {{
+          method: "{method}",
+          headers: {header}
+        }});
+        const data = await response.json();
+
+        // axios
+        import axios from 'axios'
+        const {{ data, status }} = await axios.get("{endpoint}", {{
+          params: {formatted_params},
+          headers: {header},
+        }})
+        
+  interfaces:
+    - Transaction:
+        Timestamp: string
+        From: string
+        To: string
+        Amount: number
+        PropID: string
+        Balance: number
+        Notes: string
+        Link?: string
+docs:
+  Data:
+    - name: Balance
+      description: Get the remaining balance in the Treasury
+      endpoint: /api/balance
+      method: GET
+      parameters: null
+      returntype: float
+    
+    - name: Logs
+      description: Get history of transactions
+      endpoint: /api/logs/
+      method: GET
+      parameters:
+        start:
+          type: number
+          description: Start Index (supports pythonic negative indices)
+          default: 0
+        end:
+          type: number
+          description: End Index (supports pythonic negative indices)
+          default: -1
+      returntype: Array<Transaction>

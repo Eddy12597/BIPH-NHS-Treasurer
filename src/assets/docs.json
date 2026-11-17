@@ -1,0 +1,77 @@
+{
+    "meta": {
+        "header": "Authorization: Bearer <your-api-key>",
+        "base_url": "https://eddy12598.pythonanywhere.com",
+        "categories": [
+            "Data",
+            "Procedural",
+            "Misc"
+        ],
+        "templates": [
+            {
+                "cURL": "curl {endpoint}{formatted_params} -X {method} -H {header}"
+            },
+            {
+                "Python": "import requests\nheaders = \"{header}\"\nparams = {formatted_params}\nresponse = requests.get(\"{endpoint}\", params=params)"
+            },
+            {
+                "NodeJS": "// fetch\nconst params = new URLSearchParams({formatted_params});\nconst response = await fetch(\"{endpoint}\", {{\n  method: \"{method}\",\n  headers: {header}\n}});\nconst data = await response.json();\n\n// axios\nimport axios from 'axios'\nconst {{ data, status }} = await axios.get(\"{endpoint}\", {{\n  params: {formatted_params},\n  headers: {header},\n}})"
+            }
+        ],
+        "interfaces": [
+            {
+                "Transaction": {
+                    "Timestamp": "string",
+                    "From": "string",
+                    "To": "string",
+                    "Amount": "number",
+                    "PropID": "string",
+                    "Balance": "number",
+                    "Notes": "string",
+                    "Link?": "string"
+                }
+            }
+        ]
+    },
+    "docs": {
+        "Data": [
+            {
+                "name": "Balance",
+                "description": "Get the remaining balance in the Treasury",
+                "endpoint": "/api/balance",
+                "method": "GET",
+                "parameters": null,
+                "returntype": "float",
+                "code": {
+                    "cURL": "curl https://eddy12598.pythonanywhere.com/api/balance? -X GET -H Authorization: Bearer <your-api-key>",
+                    "Python": "import requests\nheaders = \"Authorization: Bearer <your-api-key>\"\nparams = {}\nresponse = requests.get(\"https://eddy12598.pythonanywhere.com/api/balance\", params=params)",
+                    "NodeJS": "// fetch\nconst params = new URLSearchParams({});\nconst response = await fetch(\"https://eddy12598.pythonanywhere.com/api/balance\", {\n  method: \"GET\",\n  headers: Authorization: Bearer <your-api-key>\n});\nconst data = await response.json();\n\n// axios\nimport axios from 'axios'\nconst { data, status } = await axios.get(\"https://eddy12598.pythonanywhere.com/api/balance\", {\n  params: {},\n  headers: Authorization: Bearer <your-api-key>,\n})"
+                }
+            },
+            {
+                "name": "Logs",
+                "description": "Get history of transactions",
+                "endpoint": "/api/logs/",
+                "method": "GET",
+                "parameters": {
+                    "start": {
+                        "type": "number",
+                        "description": "Start Index (supports pythonic negative indices)",
+                        "default": 0
+                    },
+                    "end": {
+                        "type": "number",
+                        "description": "End Index (supports pythonic negative indices)",
+                        "default": -1
+                    }
+                },
+                "returntype": "Array<Transaction>",
+                "code": {
+                    "cURL": "curl https://eddy12598.pythonanywhere.com/api/logs/?start=0&end=-1 -X GET -H Authorization: Bearer <your-api-key>",
+                    "Python": "import requests\nheaders = \"Authorization: Bearer <your-api-key>\"\nparams = {'start': 0, 'end': -1}\nresponse = requests.get(\"https://eddy12598.pythonanywhere.com/api/logs/\", params=params)",
+                    "NodeJS": "// fetch\nconst params = new URLSearchParams({'start': 0, 'end': -1});\nconst response = await fetch(\"https://eddy12598.pythonanywhere.com/api/logs/\", {\n  method: \"GET\",\n  headers: Authorization: Bearer <your-api-key>\n});\nconst data = await response.json();\n\n// axios\nimport axios from 'axios'\nconst { data, status } = await axios.get(\"https://eddy12598.pythonanywhere.com/api/logs/\", {\n  params: {'start': 0, 'end': -1},\n  headers: Authorization: Bearer <your-api-key>,\n})"
+                }
+            }
+        ]
+    }
+}

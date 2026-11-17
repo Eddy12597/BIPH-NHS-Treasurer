@@ -48,9 +48,19 @@ export interface Transaction {
     PropID: string;
     Balance: number;
     Notes: string;
-    PrevHash: string;
-    Nonce: string;
-    ComputedHash: string;
-    Hash: string;
     Link?: string;
+}
+
+export interface DocType {
+    name: string;
+    description: string;
+    endpoint: string;
+    method: string;
+    parameters: Map<string, {
+        type: string;
+        description: string;
+        default: any;
+    }> | null;
+    returntype: string;
+    code: Map<string, string>
 }
