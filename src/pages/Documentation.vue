@@ -191,8 +191,9 @@
 import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
 import DocItem from '../components/DocItem.vue'
+import type { DocType } from '../components/main'
 import { ref, computed } from 'vue'
-import docs_json from '@/assets/docs.json'
+import docs_json from '../assets/docs.json'
 
 const siteDeveloped = true
 
@@ -208,7 +209,8 @@ const activeCategory = ref<string>(categories.value[0] ?? '')
 
 /* Docs for the active category, recomputes on every click */
 const displayDocs = computed(() => {
-  return docsRef.value.docs[activeCategory.value] ?? []
+  const docsByCategory = docsRef.value.docs as Record<string, DocType[]>
+  return docsByCategory[activeCategory.value] ?? []
 })
 
 /* Pretty label for a category key: "user_profile" -> "User Profile" */

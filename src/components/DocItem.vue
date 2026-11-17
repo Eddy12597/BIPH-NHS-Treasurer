@@ -351,26 +351,14 @@ const props = defineProps({
   }
 })
 
-/* ---- Parameters: Map -> array of [name, definition] tuples ---- */
+/* ---- Parameters: object -> array of [name, definition] tuples ---- */
 const paramEntries = computed(
-  () => {
-	try {
-		return Array.from((props.doc.parameters)?.entries() ?? []);
-	} catch(error) {
-		return Array.from((new Map(Object.entries(props.doc.parameters))?.entries() ?? []))
-	}
-  }
+  () => Object.entries(props.doc.parameters ?? {})
 )
 
-/* ---- Code examples: Map -> array of [language, source] tuples ---- */
+/* ---- Code examples: object -> array of [language, source] tuples ---- */
 const codeEntries = computed(
-  () => {
-	try {
-		return Array.from(props.doc.code?.entries() ?? []);
-	} catch(error) {
-		return Array.from((new Map(Object.entries(props.doc.code)).entries() ?? []))
-	}
-  }
+  () => Object.entries(props.doc.code)
 )
 
 /* Selected language for the code tabs (null = default to first entry) */
@@ -381,13 +369,7 @@ const currentLang = computed(
 )
 
 const activeCode = computed(
-  () => {
-	try {
-		return props.doc.code?.get(currentLang.value) ?? '';
-	} catch (error) {
-		return (new Map(Object.entries(props.doc.code)))?.get(currentLang.value) ?? '';
-	}
-  }
+  () => props.doc.code[currentLang.value] ?? ''
 )
 
 /* ---- Method badge colour mapping ---- */

@@ -15,18 +15,18 @@ meta:
     - Procedural
     - Misc
   templates:
-    - cURL: curl {endpoint}{formatted_params} -X {method} -H {header}
+    - cURL: curl {endpoint}{formatted_params} -X {method} -H "{header}"
     - Python: |-
         import requests
         headers = "{header}"
         params = {formatted_params}
-        response = requests.get("{endpoint}", params=params)
+        response = requests.{method}("{endpoint}", params=params)
     - NodeJS: |-
         // fetch
         const params = new URLSearchParams({formatted_params});
         const response = await fetch("{endpoint}", {{
           method: "{method}",
-          headers: {header}
+          headers: "{header}"
         }});
         const data = await response.json();
 
@@ -34,7 +34,7 @@ meta:
         import axios from 'axios'
         const {{ data, status }} = await axios.get("{endpoint}", {{
           params: {formatted_params},
-          headers: {header},
+          headers: "{header}",
         }})
         
   interfaces:

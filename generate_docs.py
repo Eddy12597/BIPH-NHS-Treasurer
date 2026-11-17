@@ -31,7 +31,7 @@ class Helpers:
         return { pname: pcfg['default'] for pname, pcfg in (params or {}).items()}
 
 
-# In[102]:
+# In[ ]:
 
 
 for dtype, dtypedoc in docs.items():
@@ -45,9 +45,13 @@ for dtype, dtypedoc in docs.items():
                 'NodeJS': Helpers.default_param(endpoint['parameters'])
             }[list(lang.keys())[0]]
 
+            fmt_method = {
+                'Python': endpoint['method'].lower()
+            }.get(list(lang.keys())[0], endpoint['method'])
+
             tmptext = list(lang.values())[0].format(
                 endpoint=meta['base_url'] + endpoint['endpoint'],
-                method=endpoint['method'],
+                method=fmt_method,
                 header=meta['header'],
                 formatted_params=fmt_prm
             )

@@ -56,11 +56,11 @@ export interface DocType {
     description: string;
     endpoint: string;
     method: string;
-    parameters: Map<string, {
+    parameters: Record<string, {
         type: string;
         description: string;
-        default: any;
+        default?: unknown;
     }> | null;
     returntype: string;
-    code: Map<string, string>
+    code: Record<string, string>
 }
